@@ -1,0 +1,27 @@
+@use "./assets/reset.scss";
+@use "./assets/theme.scss";
+@use "./assets/variables.scss";
+@use "ngx-toastr/toastr";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+eob-root {
+  min-height: 100dvh;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+// conflict resolution between tailwind and material design
+.mdc-notched-outline__notch {
+  border-style: none;
+}
+
+.mat-mdc-icon-button {
+  line-height: normal;
+}
