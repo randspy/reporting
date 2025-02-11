@@ -13,6 +13,16 @@ export const routes: Routes = [
       import('./layout/components/main-layout/main-layout.component').then(
         (m) => m.MainLayoutComponent,
       ),
+    children: [
+      { path: '', redirectTo: DefaultRoute, pathMatch: 'full' },
+      {
+        path: 'reporting',
+        loadChildren: () =>
+          import('./features/reporting/reporting.routes').then(
+            (m) => m.reportingRoutes,
+          ),
+      },
+    ],
   },
   {
     path: 'page-not-found',

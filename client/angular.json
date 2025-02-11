@@ -7,13 +7,13 @@
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
-          "style": "scss",
+          "style": "none",
           "changeDetection": "OnPush"
         }
       },
       "root": "",
       "sourceRoot": "src",
-      "prefix": "eob",
+      "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:application",
