@@ -79,7 +79,7 @@
       class="w-full"
     >
       @for (observation of observations(); track observation.id) {
-        <mat-chip-option [value]="observation.id">
+        <mat-chip-option [value]="observation.id" class="truncate">
           {{ observation.name }}
         </mat-chip-option>
       }
@@ -89,7 +89,7 @@
   <div class="flex gap-4 justify-end mt-4 flex-col-reverse md:flex-row">
     <button mat-button type="button" (click)="onCancel()">Annuler</button>
     <button
-      class="w-28"
+      class="w-full md:w-28"
       mat-flat-button
       color="primary"
       type="submit"
