@@ -116,6 +116,10 @@ describe('ReportingFormComponent', () => {
     });
 
     describe('Validation errors', () => {
+      const tomorrow = () => new Date(Date.now() + 24 * 60 * 60 * 1000);
+      const date101YearsAgo = () =>
+        new Date(Date.now() - 101 * 365 * 24 * 60 * 60 * 1000);
+
       it.each([
         ['last_name', '', 'Le nom est requis'],
         [
@@ -132,8 +136,13 @@ describe('ReportingFormComponent', () => {
         ['birth_date', '', 'La date de naissance est requise'],
         [
           'birth_date',
-          new Date(Date.now() + 24 * 60 * 60 * 1000).toLocaleDateString('us'),
+          tomorrow().toLocaleDateString('us'),
           'La date de naissance doit être dans le passé',
+        ],
+        [
+          'birth_date',
+          date101YearsAgo().toLocaleDateString('us'),
+          'La date de naissance ne peut pas être antérieure à 100 ans',
         ],
         ['email', '', "L'email est requis"],
         ['email', 'invalid-email', "L'email n'est pas valide"],

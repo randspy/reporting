@@ -38,6 +38,11 @@
     @if (form.get("birth_date")?.errors?.["futureDate"]) {
       <mat-error>La date de naissance doit être dans le passé</mat-error>
     }
+    @if (form.get("birth_date")?.errors?.["olderThan100Years"]) {
+      <mat-error
+        >La date de naissance ne peut pas être antérieure à 100 ans</mat-error
+      >
+    }
   </mat-form-field>
 
   <mat-form-field appearance="outline" class="w-full">

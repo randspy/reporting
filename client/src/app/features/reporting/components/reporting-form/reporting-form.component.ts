@@ -17,7 +17,10 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
-import { pastDateValidator } from '../../../../core/shared/validators/pastDateValidator';
+import {
+  futureDateValidator,
+  olderThen100YearsValidator,
+} from '../../../../core/shared/validators/date-validators';
 import { ReportingService } from '../../services/reporting.service';
 import { LoaderComponent } from '../../../../ui/components/loader/loader.component';
 import { Observation } from '../../domain/observation.types';
@@ -61,7 +64,11 @@ export class ReportingFormComponent implements OnInit {
     first_name: ['', [Validators.required, Validators.maxLength(50)]],
     birth_date: [
       null as Date | null,
-      [Validators.required, pastDateValidator()],
+      [
+        Validators.required,
+        futureDateValidator(),
+        olderThen100YearsValidator(),
+      ],
     ],
     sex: ['', [Validators.required]],
     email: ['', [Validators.required, Validators.email]],
