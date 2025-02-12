@@ -1,1 +1,108 @@
-<p>reporting-form works!</p>
+<form
+  [formGroup]="form"
+  (ngSubmit)="onSubmit()"
+  class="flex flex-col gap-4 w-full px-4"
+>
+  <h2 class="text-xl font-bold">{{ header() }}</h2>
+
+  <mat-form-field appearance="outline" class="w-full">
+    <mat-label>Nom</mat-label>
+    <input matInput formControlName="last_name" />
+    @if (form.get("last_name")?.errors?.["required"]) {
+      <mat-error>Le nom est requis</mat-error>
+    }
+    @if (form.get("last_name")?.errors?.["maxlength"]) {
+      <mat-error>Le nom ne doit pas dépasser 50 caractères</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="w-full">
+    <mat-label>Prénom</mat-label>
+    <input matInput formControlName="first_name" />
+    @if (form.get("first_name")?.errors?.["required"]) {
+      <mat-error>Le prénom est requis</mat-error>
+    }
+    @if (form.get("first_name")?.errors?.["maxlength"]) {
+      <mat-error>Le prénom ne doit pas dépasser 50 caractères</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="w-full">
+    <mat-label>Date de naissance</mat-label>
+    <input matInput [matDatepicker]="picker" formControlName="birth_date" />
+    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+    @if (form.get("birth_date")?.errors?.["required"]) {
+      <mat-error>La date de naissance est requise</mat-error>
+    }
+    @if (form.get("birth_date")?.errors?.["futureDate"]) {
+      <mat-error>La date de naissance doit être dans le passé</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="w-full">
+    <mat-label>Sexe</mat-label>
+    <mat-select formControlName="sex">
+      <mat-option value="Homme">Homme</mat-option>
+      <mat-option value="Femme">Femme</mat-option>
+      <mat-option value="Non-binaire">Non-binaire</mat-option>
+    </mat-select>
+    @if (form.get("sex")?.errors?.["required"]) {
+      <mat-error>Le sexe est requis</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="w-full">
+    <mat-label>Email</mat-label>
+    <input matInput type="email" formControlName="email" />
+    @if (form.get("email")?.errors?.["required"]) {
+      <mat-error>L'email est requis</mat-error>
+    }
+    @if (form.get("email")?.errors?.["email"]) {
+      <mat-error>L'email n'est pas valide</mat-error>
+    }
+    @if (form.get("email")?.errors?.["server"]) {
+      <mat-error>{{ form.get("email")?.errors?.["server"] }}</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="w-full">
+    <mat-label>Description</mat-label>
+    <textarea matInput formControlName="description" rows="4"></textarea>
+  </mat-form-field>
+
+  <div class="w-full">
+    <mat-label class="mb-4 font-medium">Observations</mat-label>
+    <mat-chip-listbox
+      [formControlName]="'observations'"
+      [multiple]="true"
+      class="w-full"
+    >
+      @for (observation of observations(); track observation.id) {
+        <mat-chip-option [value]="observation.id">
+          {{ observation.name }}
+        </mat-chip-option>
+      }
+    </mat-chip-listbox>
+  </div>
+
+  <div class="flex gap-4 justify-end mt-4 flex-col-reverse md:flex-row">
+    <button mat-button type="button" (click)="onCancel()">Annuler</button>
+    <button
+      class="w-28"
+      mat-flat-button
+      color="primary"
+      type="submit"
+      [disabled]="isLoading()"
+    >
+      @if (!isLoading()) {
+        <span>Enregistrer</span>
+      }
+      @if (isLoading()) {
+        <span>
+          <app-loader size="small"></app-loader>
+        </span>
+      }
+    </button>
+  </div>
+</form>

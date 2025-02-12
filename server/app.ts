@@ -10,6 +10,7 @@ function generateId(): number {
 
 const app = express();
 app.use(cors());
+app.use(express.json());
 
 app.get('/', (_, res) => {
   res.send('Mock Server');
@@ -38,7 +39,15 @@ app.get('/api/reportings', async (_, res) => {
 });
 
 app.post('/api/reportings', async (req, res) => {
-  await sleep();
+  await sleep(2000);
+  if (reportings.some((r) => r.author.email === req.body.author.email)) {
+    return res.status(400).json({
+      author: {
+        email: 'This value already exists',
+      },
+    });
+  }
+
   const id = generateId();
   const newReporting = {
     ...req.body,
@@ -46,6 +55,26 @@ app.post('/api/reportings', async (req, res) => {
   };
   reportings.push(newReporting);
   res.send(newReporting);
+});
+
+app.put('/api/reportings/:id', async (req, res) => {
+  await sleep(2000);
+  reportings = reportings.map((r) =>
+    r.id === parseInt(req.params.id) ? req.body : r
+  );
+  res.send(req.body);
+});
+
+app.get('/api/reportings/:id', async (req, res) => {
+  await sleep();
+  const reporting = reportings.find((r) => r.id === parseInt(req.params.id));
+
+  if (!reporting) {
+    return res.status(404).json({
+      message: 'Reporting not found',
+    });
+  }
+  res.send(reporting);
 });
 
 app.get('/api/observations', async (_, res) => {
