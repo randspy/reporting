@@ -1,2 +1,2 @@
 export const DefaultRoute = '/app/reporting';
-export const DefaultRoutePageName = 'Reporting';
+export const DefaultRoutePageName = 'Signalements';

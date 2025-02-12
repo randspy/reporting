@@ -26,7 +26,7 @@ export const routes: Routes = [
   },
   {
     path: 'page-not-found',
-    title: 'Page Not Found',
+    title: 'Page non trouvée',
     loadComponent: () =>
       import(
         './layout/components/page-not-found-page/page-not-found-page.component'

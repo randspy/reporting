@@ -36,7 +36,7 @@ describe('PageNotFoundPageComponent', () => {
     const { harness, user } = await setup();
 
     const goToPageLink = screen.getByRole('link', {
-      name: `Go to ${DefaultRoutePageName}`,
+      name: DefaultRoutePageName,
     });
 
     await user.click(goToPageLink);
