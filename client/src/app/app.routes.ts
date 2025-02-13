@@ -9,6 +9,7 @@ export const routes: Routes = [
   },
   {
     path: 'app',
+    title: 'Signalements',
     loadComponent: () =>
       import('./layout/components/main-layout/main-layout.component').then(
         (m) => m.MainLayoutComponent,
