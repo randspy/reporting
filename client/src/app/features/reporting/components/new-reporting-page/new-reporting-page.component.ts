@@ -11,11 +11,10 @@ import { ReportingService } from '../../services/reporting.service';
 import { PostReportingService } from '../../services/post-reporting.service';
 import { Observation } from '../../domain/observation.types';
 import { ObservationsService } from '../../services/observations.service';
-import { LoaderComponent } from '../../../../ui/components/loader/loader.component';
 
 @Component({
   selector: 'app-new-reporting-page',
-  imports: [ReportingFormComponent, LoaderComponent],
+  imports: [ReportingFormComponent],
   templateUrl: './new-reporting-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   styles: [
