@@ -49,3 +49,4 @@ In the application have only one feature - reporting. Still I have decided to cr
 - I made some form items mandatory. The spec didn't specify any mandatory fields. What is unusual for a form. Also I have added an additional validation for birth date that checks if the value is in the future.
 - Server is missing unit tests. There was no time to implement it.
 - Server keep state in memory. A nice DB would be better.
+- Server could use proper domain modeling. There was no time to work on it.
