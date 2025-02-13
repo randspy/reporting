@@ -20,7 +20,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import {
   futureDateValidator,
   olderThen100YearsValidator,
-} from '../../../../core/shared/validators/date-validators';
+} from '../../validators/date-validators';
 import { ReportingService } from '../../services/reporting.service';
 import { LoaderComponent } from '../../../../ui/components/loader/loader.component';
 import { Observation } from '../../domain/observation.types';
