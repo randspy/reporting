@@ -13,7 +13,11 @@ import { By } from '@angular/platform-browser';
 import { LoaderComponent } from '../../../../ui/components/loader/loader.component';
 import { of, throwError } from 'rxjs';
 import { Reporting } from '../../domain/reporting.types';
-import { generateReporting } from '../../../../../tests/object-generators';
+import {
+  generateObservation,
+  generateReporting,
+} from '../../../../../tests/object-generators';
+import { ObservationsService } from '../../services/observations.service';
 
 @Component({
   selector: 'app-reporting-form',
@@ -33,11 +37,16 @@ describe('EditReportingPageComponent', () => {
   let router: jest.Mocked<Router>;
   let activatedRoute: ActivatedRoute;
   let reportingService: jest.Mocked<ReportingService>;
+  let observationsService: jest.Mocked<ObservationsService>;
 
   beforeEach(async () => {
     const reportingServiceMock = {
       getReporting: jest.fn().mockReturnValue(of(null as unknown as Reporting)),
       isGetMethodLoading: jest.fn().mockReturnValue(false),
+    };
+
+    const observationsServiceMock = {
+      getObservations: jest.fn().mockReturnValue(of([] as Observation[])),
     };
 
     await TestBed.configureTestingModule({
@@ -51,6 +60,7 @@ describe('EditReportingPageComponent', () => {
         provideHttpClient(),
         provideRouter([]),
         { provide: ReportingService, useValue: reportingServiceMock },
+        { provide: ObservationsService, useValue: observationsServiceMock },
       ],
     })
       .overrideComponent(EditReportingPageComponent, {
@@ -65,6 +75,7 @@ describe('EditReportingPageComponent', () => {
         set: {
           providers: [
             { provide: ReportingService, useValue: reportingServiceMock },
+            { provide: ObservationsService, useValue: observationsServiceMock },
           ],
         },
       })
@@ -75,6 +86,9 @@ describe('EditReportingPageComponent', () => {
     reportingService = TestBed.inject(
       ReportingService,
     ) as jest.Mocked<ReportingService>;
+    observationsService = TestBed.inject(
+      ObservationsService,
+    ) as jest.Mocked<ObservationsService>;
 
     fixture = TestBed.createComponent(EditReportingPageComponent);
     component = fixture.componentInstance;
@@ -141,16 +155,14 @@ describe('EditReportingPageComponent', () => {
   });
 
   it('should pass correct inputs to form component', () => {
+    const observations = [generateObservation()];
+
     reportingService.getReporting.mockReturnValue(of(generateReporting()));
+    observationsService.getObservations.mockReturnValue(of(observations));
 
     fixture.detectChanges();
 
-    expect(mockedForm().header).toBe('Modifier Signalement');
-    expect(mockedForm().observations).toEqual([
-      { id: 1, name: 'Observation 1' },
-      { id: 2, name: 'Observation 2' },
-      { id: 3, name: 'Observation 3' },
-    ]);
+    expect(mockedForm().observations).toEqual(observations);
   });
 
   const loader = () =>

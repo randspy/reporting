@@ -1,3 +1,4 @@
+import { Observation } from '../app/features/reporting/domain/observation.types';
 import { Reporting } from '../app/features/reporting/domain/reporting.types';
 
 export function generateReporting(
@@ -16,4 +17,10 @@ export function generateReporting(
     observations: [1, 2, 3],
     ...reporting,
   };
+}
+
+export function generateObservation(
+  observation: Partial<Observation> = {},
+): Observation {
+  return { id: 1, name: 'test-name', ...observation };
 }

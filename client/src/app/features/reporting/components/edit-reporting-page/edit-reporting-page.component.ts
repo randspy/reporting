@@ -15,6 +15,7 @@ import { PutReportingService } from '../../services/put-reporting.service';
 import { Observation } from '../../domain/observation.types';
 import { LoaderComponent } from '../../../../ui/components/loader/loader.component';
 import { MatButtonModule } from '@angular/material/button';
+import { ObservationsService } from '../../services/observations.service';
 
 @Component({
   selector: 'app-edit-reporting-page',
@@ -45,22 +46,23 @@ export class EditReportingPageComponent implements OnInit {
   #router = inject(Router);
   #route = inject(ActivatedRoute);
   #reportingService = inject(ReportingService);
+  #observationsService = inject(ObservationsService);
 
   id = input.required<number>();
   reporting = signal<Reporting | null>(null);
   isLoading = this.#reportingService.isGetMethodLoading;
 
+  observations = signal<Observation[]>([]);
+
   ngOnInit() {
     this.#reportingService.getReporting(this.id()).subscribe((reporting) => {
       this.reporting.set(reporting);
     });
-  }
 
-  observations = signal<Observation[]>([
-    { id: 1, name: 'Observation 1' },
-    { id: 2, name: 'Observation 2' },
-    { id: 3, name: 'Observation 3' },
-  ]);
+    this.#observationsService.getObservations().subscribe((observations) => {
+      this.observations.set(observations);
+    });
+  }
 
   onCancel() {
     this.navigateToParent();

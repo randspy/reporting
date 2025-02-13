@@ -85,7 +85,6 @@ app.get('/api/reportings/:id', async (req, res) => {
 });
 
 app.get('/api/observations', async (_, res) => {
-  await sleep();
   res.send([
     {
       id: 1,

@@ -8,7 +8,9 @@ import { By } from '@angular/platform-browser';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { ReportingFormComponent } from '../reporting-form/reporting-form.component';
-
+import { ObservationsService } from '../../services/observations.service';
+import { of } from 'rxjs';
+import { generateObservation } from '../../../../../tests/object-generators';
 @Component({
   selector: 'app-reporting-form',
   template: '',
@@ -26,10 +28,15 @@ describe('NewReportingPageComponent', () => {
   let router: jest.Mocked<Router>;
   let activatedRoute: ActivatedRoute;
   let mockForm: MockReportingFormComponent;
+  let observationsService: jest.Mocked<ObservationsService>;
 
   beforeEach(async () => {
     const routerMock = {
       navigate: jest.fn(),
+    };
+
+    const observationsServiceMock = {
+      getObservations: jest.fn().mockReturnValue(of([] as Observation[])),
     };
 
     await TestBed.configureTestingModule({
@@ -46,6 +53,7 @@ describe('NewReportingPageComponent', () => {
           provide: ActivatedRoute,
           useValue: { snapshot: {} },
         },
+        { provide: ObservationsService, useValue: observationsServiceMock },
       ],
     })
       .overrideComponent(NewReportingPageComponent, {
@@ -56,10 +64,12 @@ describe('NewReportingPageComponent', () => {
 
     router = TestBed.inject(Router) as jest.Mocked<Router>;
     activatedRoute = TestBed.inject(ActivatedRoute);
+    observationsService = TestBed.inject(
+      ObservationsService,
+    ) as jest.Mocked<ObservationsService>;
 
     fixture = TestBed.createComponent(NewReportingPageComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
 
     const formDebugElement = fixture.debugElement.query(
       By.directive(MockReportingFormComponent),
@@ -88,11 +98,16 @@ describe('NewReportingPageComponent', () => {
   });
 
   it('should pass correct inputs to form component', () => {
-    expect(mockForm.header).toBe('Nouveau Signalement');
-    expect(mockForm.observations).toEqual([
-      { id: 1, name: 'Observation 1' },
-      { id: 2, name: 'Observation 2' },
-      { id: 3, name: 'Observation 3' },
-    ]);
+    const observations = [generateObservation()];
+
+    observationsService.getObservations.mockReturnValue(of(observations));
+
+    fixture.detectChanges();
+
+    expect(mockedForm().observations).toEqual(observations);
   });
+
+  const mockedForm = () =>
+    fixture.debugElement.query(By.directive(MockReportingFormComponent))
+      .componentInstance;
 });

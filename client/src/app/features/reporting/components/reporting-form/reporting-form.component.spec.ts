@@ -10,7 +10,10 @@ import { MatSelectHarness } from '@angular/material/select/testing';
 import { MatButtonHarness } from '@angular/material/button/testing';
 import { MatChipListboxHarness } from '@angular/material/chips/testing';
 import { of, throwError } from 'rxjs';
-import { generateReporting } from '../../../../../tests/object-generators';
+import {
+  generateReporting,
+  generateObservation,
+} from '../../../../../tests/object-generators';
 import { By } from '@angular/platform-browser';
 
 describe('ReportingFormComponent', () => {
@@ -40,14 +43,8 @@ describe('ReportingFormComponent', () => {
     component = fixture.componentInstance;
     loader = TestbedHarnessEnvironment.loader(fixture);
     fixture.componentRef.setInput('observations', [
-      {
-        id: 1,
-        name: 'Observation 1',
-      },
-      {
-        id: 2,
-        name: 'Observation 2',
-      },
+      generateObservation({ id: 1, name: 'Observation 1' }),
+      generateObservation({ id: 2, name: 'Observation 2' }),
     ]);
   });
 
