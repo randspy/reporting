@@ -46,7 +46,7 @@ import { Observation } from '../../domain/observation.types';
   standalone: true,
 })
 export class ReportingFormComponent implements OnInit {
-  formBuilder = inject(FormBuilder);
+  #formBuilder = inject(FormBuilder);
   #reportingService = inject(ReportingService);
 
   isLoading = this.#reportingService.isLoading;
@@ -57,9 +57,9 @@ export class ReportingFormComponent implements OnInit {
   save = output<void>();
   dismiss = output<void>();
 
-  initialValue = signal<Reporting | null>(null);
+  #initialValue = signal<Reporting | null>(null);
 
-  form = this.formBuilder.group({
+  form = this.#formBuilder.group({
     last_name: ['', [Validators.required, Validators.maxLength(50)]],
     first_name: ['', [Validators.required, Validators.maxLength(50)]],
     birth_date: [
@@ -91,18 +91,18 @@ export class ReportingFormComponent implements OnInit {
       });
     }
 
-    this.initialValue.set(
+    this.#initialValue.set(
       reporting
         ? reporting
-        : this.convertFormValueToReporting(this.form.value, 0),
+        : this.#convertFormValueToReporting(this.form.value, 0),
     );
   }
 
   onSubmit() {
     if (this.form.valid) {
-      const reporting: Reporting = this.convertFormValueToReporting(
+      const reporting: Reporting = this.#convertFormValueToReporting(
         this.form.value,
-        this.initialValue()?.id || 0,
+        this.#initialValue()?.id || 0,
       );
 
       this.#reportingService.saveReporting(reporting).subscribe({
@@ -111,7 +111,7 @@ export class ReportingFormComponent implements OnInit {
         },
         error: (error) => {
           if (error) {
-            this.setServerError('email', error.author.email);
+            this.#setServerError('email', error.author.email);
           }
         },
       });
@@ -124,7 +124,7 @@ export class ReportingFormComponent implements OnInit {
     this.dismiss.emit();
   }
 
-  convertFormValueToReporting(
+  #convertFormValueToReporting(
     formValue: typeof this.form.value,
     id: number,
   ): Reporting {
@@ -142,7 +142,7 @@ export class ReportingFormComponent implements OnInit {
     };
   }
 
-  setServerError(fieldPath: string, errors: string[]) {
+  #setServerError(fieldPath: string, errors: string[]) {
     const control = this.form.get(fieldPath);
 
     if (control) {
