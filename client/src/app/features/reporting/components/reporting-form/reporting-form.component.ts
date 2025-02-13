@@ -110,7 +110,9 @@ export class ReportingFormComponent implements OnInit {
           this.save.emit();
         },
         error: (error) => {
-          this.setServerError('email', error.author.email);
+          if (error) {
+            this.setServerError('email', error.author.email);
+          }
         },
       });
     } else {

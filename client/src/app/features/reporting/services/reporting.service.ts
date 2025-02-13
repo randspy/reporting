@@ -2,10 +2,12 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { Reporting } from '../domain/reporting.types';
 import { catchError, finalize, throwError, of } from 'rxjs';
+import { NotificationService } from '../../../core/shared/services/notification.service';
 
 @Injectable()
 export class ReportingService {
   #http = inject(HttpClient);
+  #notificationService = inject(NotificationService);
 
   // isLoading is used as abstraction and to be overridden by the child services
   isLoading = signal(false);
@@ -18,6 +20,7 @@ export class ReportingService {
     this.isPostMethodLoading.set(true);
     return this.#http.post<Reporting>('api/reportings', reporting).pipe(
       catchError((error: HttpErrorResponse) => {
+        this.#notificationService.showError(error, 'La création a échoué');
         return throwError(() => {
           return error.error;
         });
@@ -32,6 +35,10 @@ export class ReportingService {
       .put<Reporting>(`api/reportings/${reporting.id}`, reporting)
       .pipe(
         catchError((error: HttpErrorResponse) => {
+          this.#notificationService.showError(
+            error,
+            'La modification a échoué',
+          );
           return throwError(() => {
             return error.error;
           });
@@ -42,16 +49,28 @@ export class ReportingService {
 
   getReportings() {
     this.isGetMethodLoading.set(true);
-    return this.#http
-      .get<Reporting[]>('api/reportings')
-      .pipe(finalize(() => this.isGetMethodLoading.set(false)));
+    return this.#http.get<Reporting[]>('api/reportings').pipe(
+      catchError((error: HttpErrorResponse) => {
+        this.#notificationService.showError(error, 'La récupération a échoué');
+        return throwError(() => {
+          return error.error;
+        });
+      }),
+      finalize(() => this.isGetMethodLoading.set(false)),
+    );
   }
 
   getReporting(id: number) {
     this.isGetMethodLoading.set(true);
-    return this.#http
-      .get<Reporting>(`api/reportings/${id}`)
-      .pipe(finalize(() => this.isGetMethodLoading.set(false)));
+    return this.#http.get<Reporting>(`api/reportings/${id}`).pipe(
+      catchError((error: HttpErrorResponse) => {
+        this.#notificationService.showError(error, 'La récupération a échoué');
+        return throwError(() => {
+          return error.error;
+        });
+      }),
+      finalize(() => this.isGetMethodLoading.set(false)),
+    );
   }
 
   // saveReporting is used as abstraction and to be overridden by the child services

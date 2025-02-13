@@ -5,6 +5,8 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { generateReporting } from '../../../../tests/object-generators';
 import { HttpTestingController } from '@angular/common/http/testing';
+import { NotificationService } from '../../../core/shared/services/notification.service';
+import { mockNotificationService } from '../../../../tests/mock-notification-service';
 
 describe('ReportingService', () => {
   let service: ReportingService;
@@ -14,6 +16,7 @@ describe('ReportingService', () => {
     TestBed.configureTestingModule({
       providers: [
         ReportingService,
+        { provide: NotificationService, useValue: mockNotificationService },
         provideHttpClient(),
         provideHttpClientTesting(),
       ],
@@ -67,6 +70,10 @@ describe('ReportingService', () => {
           status: 400,
           statusText: 'Bad Request',
         },
+      );
+
+      expect(mockNotificationService.showError.mock.calls[0][1]).toEqual(
+        'La création a échoué',
       );
     });
 
@@ -134,6 +141,10 @@ describe('ReportingService', () => {
           statusText: 'Bad Request',
         },
       );
+
+      expect(mockNotificationService.showError.mock.calls[0][1]).toEqual(
+        'La modification a échoué',
+      );
     });
 
     it('should have the loading signal to false when the service is created', () => {
@@ -169,6 +180,29 @@ describe('ReportingService', () => {
       req.flush(reportings);
     });
 
+    it('should throw an error', (done) => {
+      service.getReportings().subscribe({
+        error: (err) => {
+          expect(err).toEqual({});
+          done();
+        },
+      });
+
+      const req = httpMock.expectOne('api/reportings');
+      expect(req.request.method).toBe('GET');
+      req.flush(
+        {},
+        {
+          status: 500,
+          statusText: 'Internal Server Error',
+        },
+      );
+
+      expect(mockNotificationService.showError.mock.calls[0][1]).toEqual(
+        'La récupération a échoué',
+      );
+    });
+
     it('should have the loading signal to false when the service is created', () => {
       expect(service.isGetMethodLoading()).toBe(false);
     });
@@ -200,6 +234,29 @@ describe('ReportingService', () => {
       const req = httpMock.expectOne(`api/reportings/${reporting.id}`);
       expect(req.request.method).toBe('GET');
       req.flush(reporting);
+    });
+
+    it('should throw an error', (done) => {
+      service.getReporting(1).subscribe({
+        error: (err) => {
+          expect(err).toEqual({});
+          done();
+        },
+      });
+
+      const req = httpMock.expectOne(`api/reportings/1`);
+      expect(req.request.method).toBe('GET');
+      req.flush(
+        {},
+        {
+          status: 500,
+          statusText: 'Internal Server Error',
+        },
+      );
+
+      expect(mockNotificationService.showError.mock.calls[0][1]).toEqual(
+        'La récupération a échoué',
+      );
     });
 
     it('should have the loading signal to false when the service is created', () => {

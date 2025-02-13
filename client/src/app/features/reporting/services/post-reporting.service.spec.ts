@@ -8,6 +8,8 @@ import {
 import { provideHttpClient } from '@angular/common/http';
 import { generateReporting } from '../../../../tests/object-generators';
 import { of } from 'rxjs';
+import { mockNotificationService } from '../../../../tests/mock-notification-service';
+import { NotificationService } from '../../../core/shared/services/notification.service';
 
 describe('PostReportingService', () => {
   let service: PostReportingService;
@@ -17,6 +19,7 @@ describe('PostReportingService', () => {
     TestBed.configureTestingModule({
       providers: [
         PostReportingService,
+        { provide: NotificationService, useValue: mockNotificationService },
         provideHttpClientTesting(),
         provideHttpClient(),
       ],

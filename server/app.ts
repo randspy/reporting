@@ -43,7 +43,7 @@ app.post('/api/reportings', async (req, res) => {
   if (reportings.some((r) => r.author.email === req.body.author.email)) {
     return res.status(400).json({
       author: {
-        email: 'This value already exists',
+        email: 'Cette valeur existe déjà',
       },
     });
   }
@@ -59,9 +59,16 @@ app.post('/api/reportings', async (req, res) => {
 
 app.put('/api/reportings/:id', async (req, res) => {
   await sleep(2000);
-  reportings = reportings.map((r) =>
-    r.id === parseInt(req.params.id) ? req.body : r
+
+  const reportingIndex = reportings.findIndex(
+    (r) => r.id === parseInt(req.params.id)
   );
+
+  if (reportingIndex === -1) {
+    return res.status(404).json({ message: 'Reporting not found' });
+  }
+
+  reportings[reportingIndex] = req.body;
   res.send(req.body);
 });
 
